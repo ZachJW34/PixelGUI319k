@@ -30,5 +30,14 @@ No configuration required.
 
 Troubleshooting
 ---------------
-Program is in, let's say, alpha. It is not perfect and will have some bugs
+Program is in, let's say, alpha. It is not perfect and will have some bugs.
 
+Maintainers
+-----------
+Zachary Williams
+
+FAQ
+---
+Q: I define a color and click on a color and nothing happens. What do?
+A: You are most likely defining a color that is not supported by tkinter. Click on View->Color Chart to see all supported colors.
+   If you are using a hexadecimal value, make sure it is 16/24/32 bit color and you include the "#", such as "#000FFF000
