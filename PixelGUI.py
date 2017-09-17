@@ -32,10 +32,10 @@ class ZachsButtons(object):
         subMenu = Menu(menu, tearoff=0)
         menu.add_cascade(label="File", menu=subMenu)
         topPadding=Frame(master, width=370, height=10)
-        subMenu.add_command(label="New Project", command=self.doNothing)
         subMenu.add_command(label="New File", command=partial(self.importpic, bFrame, topPadding))
+        subMenu.add_command(label="Placeholder", command=self.doNothing)
         subMenu.add_separator()
-        subMenu.add_command(label="Exit", command=self.doNothing)
+        subMenu.add_command(label="Placeholder", command=self.doNothing)
 
         editMenu= Menu(menu, tearoff=0)
         menu.add_cascade(label="Edit", menu=editMenu)
@@ -259,6 +259,7 @@ class ZachsButtons(object):
     def resizeandplace(self, entry1, entry2, entry3, kill, frame, padding):
         if entry1.get() == "" or entry2.get() == "" or entry3.get() == "":
             kill.destroy()
+            padding.config(width=370, height = 10)
             return
         self.picname = entry1.get()
         print(self.picname)
@@ -270,6 +271,12 @@ class ZachsButtons(object):
         self.gridwidth = int(entry2.get())
         self.gridheight = int(entry3.get())
         self.griddim = self.gridheight * self.gridwidth
+        try:
+            im = Image.open(self.picname)
+        except:
+            kill.destroy
+            padding.config(width=370, height = 10)
+            return
         im = Image.open(self.picname)
         im = im.resize((self.gridwidth, self.gridheight), Image.NEAREST)
         pix = im.convert('RGB')
