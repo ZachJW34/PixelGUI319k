@@ -99,7 +99,7 @@ class ZachsButtons(object):
                 self.buttons[position] = Button(frame, width=self.buttonw, height=self.buttonh, bg='red',command=partial(self.buttonColor, position, frame, padding))
                 self.buttons[position].grid(row=int(position / self.gridwidth), column=int(position % self.gridwidth))
                 self.colors[position] = "red"
-                print("Something fucked")
+                print("Color entered is not recognized by tkinter. Please format the color as either a recognized tkinter string or "#RGB" or "#RRGGBB" or "#RRRGGGBBB" or "#RRRRGGGGBBBB"")
                 return
             self.buttons[position] = Button(frame, width=self.buttonw, height=self.buttonh, bg=self.fillbutton,command=partial(self.buttonColor, position, frame, padding))
             self.buttons[position].grid(row=int(position / self.gridwidth), column=int(position % self.gridwidth))
