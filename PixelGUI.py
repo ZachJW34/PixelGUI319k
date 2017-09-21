@@ -1,3 +1,5 @@
+#Developed by Zachary Williams
+
 from tkinter import *
 from functools import partial
 from PIL import Image
@@ -5,7 +7,7 @@ import sys
 from sys import platform
 
 
-class ZachsButtons(object):
+class mainclass(object):
     colorfillvar = 0
     gridwidth = 8
     gridheight = 8
@@ -402,6 +404,6 @@ class ZachsButtons(object):
 
 
 root = Tk()
-z = ZachsButtons(root)
+z = mainclass(root)
 root.mainloop()
 sys.exit()
