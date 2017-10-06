@@ -274,7 +274,7 @@ class mainclass(object):
             self.gridwidth = int(entry1.get())
             self.gridheight = int(entry2.get())
         else:
-            if entry1.get in self.COLORS:
+            if entry1.get() in self.COLORS:
                 self.basecolor = entry1.get()
             else:
                 kill.destroy()
