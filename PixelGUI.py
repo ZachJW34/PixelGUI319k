@@ -107,7 +107,8 @@ class mainclass(object):
 
         editMenu = Menu(menu, tearoff=0)
         menu.add_cascade(label="Edit", menu=editMenu)
-        editMenu.add_command(label="Placeholder", command=self.doNothing)
+        editMenu.add_command(label="Remove Row", command=partial(self.removeRow, bFrame, topPadding))
+        editMenu.add_command(label="Remove Col", command=partial(self.removeCol, bFrame, topPadding))
         viewMenu = Menu(menu, tearoff=0)
         menu.add_cascade(label="View", menu=viewMenu)
         viewMenu.add_command(label="Color Chart", command=self.viewColorChart)
@@ -259,10 +260,26 @@ class mainclass(object):
             padding.config(width=self.toolbarw, height=self.toolbarh)
             return
         if entry2 != 1:
+            try:
+                temp1 = int(entry1.get())
+                temp2 = int(entry2.get())
+            except:
+                kill.destroy()
+                padding.config(width=self.toolbarw, height=self.toolbarh)
+                return
+            if int(entry1.get()) >30 or int(entry2.get()) >30:
+                kill.destroy()
+                padding.config(width=self.toolbarw, height=self.toolbarh)
+                return
             self.gridwidth = int(entry1.get())
             self.gridheight = int(entry2.get())
         else:
-            self.basecolor = entry1.get()
+            if entry1.get in self.COLORS:
+                self.basecolor = entry1.get()
+            else:
+                kill.destroy()
+                padding.config(width=self.toolbarw, height=self.toolbarh)
+                return
         for i in range(self.griddim):
             self.buttons[i].grid_forget()
         self.griddim = self.gridwidth * self.gridheight
@@ -334,6 +351,12 @@ class mainclass(object):
             return
         self.picname = entry1.get()
         print(self.picname)
+        try:
+            im = Image.open(self.picname)
+        except:
+            kill.destroy()
+            padding.config(width=self.toolbarw, height=self.toolbarh)
+            return
         for i in range(self.griddim):
             self.buttons[i].grid_forget()
         temp1 = self.griddim
@@ -342,12 +365,6 @@ class mainclass(object):
         self.gridwidth = int(entry2.get())
         self.gridheight = int(entry3.get())
         self.griddim = self.gridheight * self.gridwidth
-        try:
-            im = Image.open(self.picname)
-        except:
-            kill.destroy
-            padding.config(width=self.toolbarw, height=self.toolbarh)
-            return
         im = Image.open(self.picname)
         im = im.resize((self.gridwidth, self.gridheight), Image.NEAREST)
         pix = im.convert('RGB')
@@ -401,6 +418,96 @@ class mainclass(object):
             if (row > 36):
                 row = 0
                 col += 1
+
+    def removeRow(self, frame, padding):
+        gridask = Frame(padding)
+        label_1 = Label(gridask, text="Row: ")
+        entry_1 = Entry(gridask)
+        buttonOK = Button(gridask, text="OK",
+                          command=partial(self.manMatRow, entry_1, gridask, frame, padding))
+        label_1.grid(row=0, sticky=E)
+        entry_1.grid(row=0, column=1)
+        buttonOK.grid(row=1, columnspan=2)
+        gridask.pack()
+
+    def removeCol(self, frame, padding):
+        gridask = Frame(padding)
+        label_1 = Label(gridask, text="Column: ")
+        entry_1 = Entry(gridask)
+        buttonOK = Button(gridask, text="OK",
+                          command=partial(self.manMatCol, entry_1, gridask, frame, padding))
+        label_1.grid(row=0, sticky=E)
+        entry_1.grid(row=0, column=1)
+        buttonOK.grid(row=1, columnspan=2)
+        gridask.pack()
+
+    def manMatRow(self, entry_1, gridask, frame, padding):
+        try:
+            temp1 = int(entry_1.get())
+        except:
+            print("Value given failed integer conversion")
+            gridask.destroy()
+            padding.config(width=self.toolbarw, height=self.toolbarh)
+            return
+        if int(entry_1.get()) <=0 or int(entry_1.get()) >self.gridheight:
+            print("Integer given is out of bounds")
+            gridask.destroy()
+            padding.config(width=self.toolbarw, height=self.toolbarh)
+            return
+        rowID = int(entry_1.get())-1
+        for i in range(self.griddim):
+            self.buttons[i].grid_forget()
+        self.buttons = []
+        for i in range(self.gridwidth):
+            del self.colors[self.gridwidth*rowID]
+            print(i)
+        self.gridheight = self.gridheight - 1
+        self.griddim = self.gridheight*self.gridwidth
+        for i in range(self.griddim):
+            self.buttons.append(Button(frame, width=self.buttonw, height=self.buttonh, bg=self.colors[i],
+                                       command=partial(self.buttonColor, i, frame, padding)))
+            self.buttons[i].grid(row=int((i / self.gridwidth)), column=int((i % self.gridwidth)))
+        gridask.destroy()
+        padding.config(width=self.toolbarw, height=self.toolbarh)
+        frame.pack()
+
+    def manMatCol(self, entry_1, gridask, frame, padding):
+        try:
+            temp1 = int(entry_1.get())
+        except:
+            print("Value given failed integer conversion")
+            gridask.destroy()
+            padding.config(width=self.toolbarw, height=self.toolbarh)
+            return
+        if int(entry_1.get()) <=0 or int(entry_1.get()) >self.gridwidth:
+            print("Integer given is out of bounds")
+            gridask.destroy()
+            padding.config(width=self.toolbarw, height=self.toolbarh)
+            return
+        colID = int(entry_1.get())-1
+        for i in range(self.griddim):
+            self.buttons[i].grid_forget()
+        self.buttons = []
+        temp = []
+        j=0
+        for i in range(self.griddim):
+            if (i%self.gridwidth == colID):
+                continue
+            else:
+                temp.append(self.colors[i])
+                j=j+1
+        self.colors = temp
+        self.gridwidth = self.gridwidth - 1
+        self.griddim = self.gridheight*self.gridwidth
+        for i in range(self.griddim):
+            self.buttons.append(Button(frame, width=self.buttonw, height=self.buttonh, bg=self.colors[i],
+                                       command=partial(self.buttonColor, i, frame, padding)))
+            self.buttons[i].grid(row=int((i / self.gridwidth)), column=int((i % self.gridwidth)))
+        gridask.destroy()
+        padding.config(width=self.toolbarw, height=self.toolbarh)
+        frame.pack()
+
+
 
 
 root = Tk()
