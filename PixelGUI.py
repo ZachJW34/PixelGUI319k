@@ -317,7 +317,7 @@ class mainclass(object):
 
     def expFunc(self):
         print('writing file')
-        file = open("testfile.txt", "w")
+        file = open("bitmap.txt", "w")
         file.write(
             "uint16_t bitmap[] = {" + ','.join([self.getButtonColor(button) for button in self.buttons]) + "};\n\n")
         file.write("int idx = 0;\nfor (int i=0; i< " + str(self.gridheight) + "; i++){\n" + "\tfor (int j=0; j< " + str(
